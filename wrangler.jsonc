@@ -3,7 +3,7 @@
   "main": "src/worker.js",
   "compatibility_date": "2025-09-01",
   "assets": {
-    "directory": "./public",
+    "directory": "./Public",
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"]
   },
