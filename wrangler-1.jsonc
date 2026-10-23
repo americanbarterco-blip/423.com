@@ -1,0 +1,16 @@
+{
+  "name": "423-rent",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": {
+    "PUBLIC_URL": "https://423.rent",
+    "SUPABASE_URL": "https://kdiwehqtezlhecxsoysj.supabase.co",
+    "SUPABASE_TABLE_PREFIX": "r423_",
+    "ADMIN_USER": "admin"
+  }
+}
