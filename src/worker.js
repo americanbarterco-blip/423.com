@@ -531,10 +531,65 @@ async function route(req, env) {
 
 export default {
   async fetch(req, env) {
-    try { return await route(req, env); }
+    try { const seo = await seoHandle(req, env); if (seo) return seo; return await route(req, env); }
     catch (err) {
       console.error('[error]', req.method, req.url, err && err.message);
       return json(500, { error: 'Server error.' });
     }
   },
 };
+// ===== 423.rent SEO (paste at the very END of src/worker.js) =====
+const seoEsc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+const seoPick = (o, keys) => { for (const k of keys) { if (o && o[k] !== undefined && o[k] !== null && o[k] !== '') return o[k]; } return ''; };
+
+async function seoHandle(req, env) {
+  if (req.method !== 'GET') return null;
+  const p = new URL(req.url).pathname;
+  if (p !== '/robots.txt' && p !== '/sitemap.xml' && !p.startsWith('/listing/')) return null;
+  const c = cfg(env);
+  const base = c.PUBLIC_URL;
+
+  if (p === '/robots.txt') {
+    return new Response('User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin\n\nSitemap: ' + base + '/sitemap.xml\n',
+      { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
+  }
+  if (!c.SB_URL || !c.SB_KEY) return null;
+
+  if (p === '/sitemap.xml') {
+    const rows = await db.select('listings', {}, { order: 'created_at.desc', limit: 500 });
+    const urls = [base + '/'].concat(rows.map((r) => base + '/listing/' + encodeURIComponent(r.id)));
+    const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+      urls.map((u) => '  <url><loc>' + seoEsc(u) + '</loc></url>').join('\n') + '\n</urlset>\n';
+    return new Response(xml, { headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
+  }
+
+  const m = p.match(/^\/listing\/([^/]+)$/);
+  if (!m) return null;
+  const id = decodeURIComponent(m[1]);
+  const row = (await db.select('listings', { id: eq(id) }, { limit: 1 }))[0];
+  if (!row) return new Response('Listing not found', { status: 404, headers: { 'Content-Type': 'text/plain' } });
+  const l = toListing(row);
+  const title = String(seoPick(l, ['title', 'name']) || 'Rental listing').slice(0, 90);
+  const desc = String(seoPick(l, ['description', 'desc', 'details']) || ('Rent ' + title + ' on 423.rent.')).slice(0, 300);
+  const price = Number(seoPick(l, ['price', 'rent', 'rate', 'daily', 'perDay']));
+  const img = String(seoPick(l, ['image', 'photo', 'img']) || '');
+  const imgUrl = /^https?:\/\//.test(img) ? img : '';
+  const url = base + '/listing/' + encodeURIComponent(id);
+  const ld = { '@context': 'https://schema.org', '@type': 'Product', name: title, description: desc, url };
+  if (imgUrl) ld.image = imgUrl;
+  if (Number.isFinite(price) && price > 0) ld.offers = { '@type': 'Offer', price: price.toFixed(2), priceCurrency: 'USD', availability: 'https://schema.org/InStock', url };
+  const html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<title>' + seoEsc(title) + ' | 423.rent</title>' +
+    '<meta name="description" content="' + seoEsc(desc) + '">' +
+    '<link rel="canonical" href="' + seoEsc(url) + '">' +
+    '<meta property="og:title" content="' + seoEsc(title) + '"><meta property="og:description" content="' + seoEsc(desc) + '">' +
+    '<meta property="og:type" content="website"><meta property="og:url" content="' + seoEsc(url) + '">' +
+    (imgUrl ? '<meta property="og:image" content="' + seoEsc(imgUrl) + '">' : '') +
+    '<script type="application/ld+json">' + JSON.stringify(ld).replace(/</g, '\\u003c') + '</script>' +
+    '<style>body{font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;padding:16px;line-height:1.5}img{max-width:100%;border-radius:8px}a.btn{display:inline-block;background:#111;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none}</style>' +
+    '</head><body><p><a href="/">423.rent</a></p><h1>' + seoEsc(title) + '</h1>' +
+    (imgUrl ? '<img src="' + seoEsc(imgUrl) + '" alt="' + seoEsc(title) + '">' : '') +
+    (Number.isFinite(price) && price > 0 ? '<p><strong>$' + seoEsc(price.toFixed(2)) + '</strong></p>' : '') +
+    '<p>' + seoEsc(desc) + '</p><p><a class="btn" href="/">Rent this on 423.rent</a></p></body></html>';
+  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=600' } });
+      }
