@@ -510,44 +510,83 @@
     .pf-top .pf-brand{display:block;}
     .pf-search{display:none;}
     #profileContent{padding:16px 14px 42px;}
-    .pf-mnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;bottom:0;left:0;right:0;height:66px;background:#031015;border-top:1px solid rgba(42,190,211,.28);z-index:70;}
+    .pf-mnav{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;bottom:0;left:0;right:0;height:66px;background:#031015;border-top:1px solid rgba(42,190,211,.28);z-index:70;}
     .pf-mnav button{border:0;background:none;color:#aebfc2;font-size:10px;display:grid;place-items:center;align-content:center;gap:2px;}
     .pf-mnav button.active{color:#31f2df;}
     .pf-mnav span{font-size:19px;}
   }
 
   /* ===== home rental feed ===== */
-  .feed-wrap{max-width:560px;margin:0 auto;padding:12px 16px 0;}
+  .feed-wrap{max-width:none;margin:0 auto;padding:12px 16px 0;}
   .feed-chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none;}
   .feed-chips::-webkit-scrollbar{display:none;}
   .feed-chip{flex:none;padding:8px 15px;border-radius:20px;border:1px solid var(--cyan2);color:var(--cyan);background:rgba(29,185,208,.05);font-size:13px;font-weight:600;white-space:nowrap;}
   .feed-chip.active{background:var(--cyan);color:#02080b;}
-  .feed{display:flex;flex-direction:column;gap:18px;}
-  .feed-card{position:relative;border:1px solid #0c8294;border-radius:20px;overflow:hidden;background:#061116;box-shadow:0 0 30px rgba(20,220,225,.08);scroll-margin-top:92px;}
-  .feed-media{position:relative;height:min(52vh,420px);background:#0b1010;cursor:pointer;}
+  .feed{display:flex;flex-direction:row;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding:2px 2px 14px;scrollbar-width:thin;}
+  .feed-card{position:relative;flex:0 0 232px;scroll-snap-align:start;border:1px solid #0c8294;border-radius:18px;overflow:hidden;background:#061116;box-shadow:0 0 24px rgba(20,220,225,.08);scroll-margin-top:92px;}
+  .feed-media{position:relative;height:150px;background:#0b1010;cursor:pointer;}
   .feed-media img{width:100%;height:100%;object-fit:cover;}
   .feed-media:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 30%,transparent 60%,rgba(6,17,22,.95));pointer-events:none;}
   .feed-chip-top{position:absolute;top:14px;left:14px;z-index:2;display:flex;gap:8px;align-items:center;padding:6px 12px;border-radius:20px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;border:1px solid rgba(255,255,255,.15);}
   .feed-count{position:absolute;top:14px;right:14px;z-index:2;padding:5px 10px;border-radius:20px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;}
-  .feed-rail{position:absolute;right:12px;bottom:18px;z-index:3;display:grid;gap:14px;}
-  .feed-rail button{width:46px;height:46px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:20px;}
+  .feed-rail{position:absolute;right:8px;bottom:8px;z-index:3;display:grid;gap:8px;}
+  .feed-rail button{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:15px;}
   .feed-rail button.on{color:#ff4f6d;border-color:#ff4f6d;}
-  .feed-info{padding:6px 18px 18px;margin-top:-6px;position:relative;z-index:2;}
+  .feed-info{padding:4px 12px 12px;margin-top:-4px;position:relative;z-index:2;}
   .feed-owner{display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:8px;}
   .feed-owner .av{width:34px;height:34px;border-radius:50%;overflow:hidden;background:#1b2b35;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:1.5px solid var(--cyan);flex:none;}
   .feed-owner .nm{font-size:13px;font-weight:700;color:#fff;}
   .feed-owner .rt{font-size:11px;color:#ffd34f;}
-  .feed-title{font-size:21px;font-weight:700;color:#fff;line-height:1.2;}
-  .feed-price{font-size:24px;font-weight:800;color:#fff;margin:6px 0;}
-  .feed-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
-  .feed-meta span{font-size:12px;color:#c8d5d7;padding:4px 10px;border:1px solid var(--line);border-radius:14px;}
-  .feed-desc{font-size:13.5px;color:#d7e1e3;line-height:1.5;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
-  .feed-actions{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:10px;}
-  .feed-actions button{height:46px;border-radius:12px;font-weight:700;font-size:14px;border:1px solid #d7e1e3;color:#fff;background:transparent;}
+  .feed-title{font-size:15px;font-weight:700;color:#fff;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .feed-price{font-size:17px;font-weight:800;color:#fff;margin:4px 0;}
+  .feed-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;max-height:24px;overflow:hidden;}
+  .feed-meta span{font-size:11px;color:#c8d5d7;padding:2px 8px;border:1px solid var(--line);border-radius:12px;}
+  .feed-desc{display:none;}
+  .feed-actions{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:6px;}
+  .feed-actions button{height:34px;border-radius:10px;font-weight:700;font-size:12px;border:1px solid #d7e1e3;color:#fff;background:transparent;}
   .feed-actions button.on{border-color:#ff4f6d;color:#ff4f6d;}
   .feed-actions button.rent{border:0;background:linear-gradient(90deg,#ffc53d,#ff9621);color:#111;}
-  .feed-next{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 2px;}
-  .feed-empty{padding:40px 10px;text-align:center;color:var(--muted);}
+  .feed-next{display:none;}
+  .feed-empty{padding:40px 10px;text-align:center;color:var(--muted);flex:1;}
+  .feed-chip-top{top:8px;left:8px;padding:4px 9px;font-size:10px;}
+  .feed-count{top:8px;right:8px;}
+  .feed-vid-chip{font-size:10px;}
+
+  /* ===== community ===== */
+  .cm-wrap{max-width:720px;margin:0 auto;padding:26px 16px 48px;}
+  .cm-head h2{font-size:26px;margin-bottom:4px;}
+  .cm-head p{color:var(--muted);font-size:13.5px;margin-bottom:16px;max-width:60ch;}
+  .cm-compose{border:1px solid #0c8294;border-radius:16px;background:#061116;padding:14px;margin-bottom:16px;}
+  .cm-compose textarea{width:100%;min-height:84px;resize:vertical;background:#0b1a20;color:#fff;border:1px solid rgba(49,242,223,.25);border-radius:12px;padding:10px 12px;font:inherit;font-size:14.5px;}
+  .cm-row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap;}
+  .cm-topics{display:flex;gap:6px;flex-wrap:wrap;}
+  .cm-topic{border:1px solid var(--cyan2);color:var(--cyan);background:rgba(29,185,208,.05);border-radius:16px;padding:6px 12px;font-size:12.5px;font-weight:600;}
+  .cm-topic.on{background:var(--cyan);color:#02080b;}
+  .cm-post-btn{border:0;border-radius:20px;padding:10px 20px;font-weight:800;font-size:14px;background:linear-gradient(90deg,#ffc53d,#ff9621);color:#111;}
+  .cm-post-btn[disabled]{opacity:.5;}
+  .cm-note{font-size:12px;color:var(--muted);margin-top:8px;}
+  .cm-err{font-size:13px;color:#ff8da0;margin-top:8px;min-height:0;}
+  .cm-filter{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none;}
+  .cm-post{border:1px solid rgba(49,242,223,.22);border-radius:16px;background:#061116;padding:14px;margin-bottom:12px;}
+  .cm-who{display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:8px;}
+  .cm-av{width:38px;height:38px;border-radius:50%;overflow:hidden;background:#1b2b35;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:1.5px solid var(--cyan);flex:none;}
+  .cm-nm{font-weight:700;color:#fff;font-size:14px;}
+  .cm-sub{font-size:11.5px;color:var(--muted);}
+  .cm-text{font-size:14.5px;color:#e4eef0;line-height:1.55;white-space:pre-wrap;word-break:break-word;}
+  .cm-acts{display:flex;gap:10px;margin-top:10px;align-items:center;}
+  .cm-acts button{border:1px solid rgba(255,255,255,.25);background:transparent;color:#d7e1e3;border-radius:16px;padding:6px 14px;font-size:13px;font-weight:600;}
+  .cm-acts button.on{border-color:#ff4f6d;color:#ff4f6d;}
+  .cm-acts .del{margin-left:auto;border-color:rgba(255,141,160,.4);color:#ff8da0;}
+  .cm-empty{padding:34px 10px;text-align:center;color:var(--muted);}
+  .cm-badge{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:10px;border:1px solid var(--cyan2);color:var(--cyan);margin-left:6px;vertical-align:middle;}
+  .cm-people{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 14px;scrollbar-width:thin;}
+  .cm-person{flex:0 0 150px;border:1px solid #0c8294;border-radius:16px;background:#061116;padding:14px 10px;text-align:center;cursor:pointer;}
+  .cm-person .cm-av{width:56px;height:56px;margin:0 auto 8px;font-size:17px;}
+  .cm-person .cm-nm{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cm-person .cm-sub{margin-top:2px;}
+  .cm-home{display:grid;gap:10px;}
+  @media(min-width:900px){.cm-home{grid-template-columns:1fr 1fr;}}
+  .cm-more{margin-top:8px;border:1px solid var(--cyan2);color:var(--cyan);background:transparent;border-radius:20px;padding:9px 18px;font-weight:700;font-size:13.5px;}
 
   /* ===== Big D–style home sections ===== */
   .bd-wrap{max-width:1100px;margin:0 auto;}
@@ -1004,6 +1043,7 @@
     <nav class="main">
       <a href="#" data-nav="home" class="active">Home</a>
       <a href="#" data-nav="categories">Categories</a>
+      <a href="#" data-nav="community">Community</a>
       <a href="#" data-nav="games">Games</a>
       <a href="#" data-nav="profile">Profile</a>
       <a href="#" data-nav="admin" id="adminNavLink" style="display:none;">Admin</a>
@@ -1020,6 +1060,7 @@
   <nav class="pf-nav" id="pfNav">
     <button data-snav="home" onclick="goNav('home')"><span class="ic">⌂</span>Home</button>
     <button data-snav="categories" onclick="goNav('categories')"><span class="ic">⌕</span>Browse</button>
+    <button data-snav="community" onclick="goNav('community')"><span class="ic">✦</span>Community</button>
     <button data-snav="profile" onclick="goNav('profile')"><span class="ic">♙</span>Profile</button>
     <button data-snav="games" onclick="goNav('games')"><span class="ic">⌁</span>Games</button>
     <button onclick="pfOpenMessages()"><span class="ic">◌</span>Messages</button>
@@ -1039,7 +1080,8 @@
 </header>
 <nav class="pf-mnav" id="pfMnav">
   <button data-snav="home" onclick="goNav('home')"><span>⌂</span>Home</button>
-  <button data-snav="categories" onclick="goNav('categories')"><span>⌗</span>Categories</button>
+  <button data-snav="categories" onclick="goNav('categories')"><span>⌗</span>Browse</button>
+  <button data-snav="community" onclick="goNav('community')"><span>✦</span>Community</button>
   <button onclick="pfOpenMessages()"><span>☏</span>Messages</button>
   <button data-snav="profile" onclick="goNav('profile')"><span>♙</span>Profile</button>
   <button data-snav="games" onclick="goNav('games')"><span>⌁</span>Games</button>
@@ -1223,7 +1265,7 @@
   </section>
 
   <section>
-    <div class="section-head"><h2>Rental feed</h2><span class="sub">scroll through everything near you</span></div>
+    <div class="section-head"><h2>Rental feed</h2><span class="sub">swipe sideways →</span></div>
     <div id="homeVideos"></div>
     <div class="feed-wrap" style="padding:0;">
       <div class="feed-chips" id="feedChips"></div>
@@ -1231,6 +1273,22 @@
     </div>
   </section>
 
+  <section>
+    <div class="section-head"><h2>Neighbors</h2><span class="sub">tap a profile to check them out</span></div>
+    <div class="cm-people" id="homePeople"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>From the community</h2><span class="sub">tips &amp; inspiration</span></div>
+    <div class="cm-home" id="homePosts"></div>
+    <button class="cm-more" onclick="goNav('community')">See all posts →</button>
+  </section>
+
+</main>
+
+<!-- ========== COMMUNITY PAGE ========== -->
+<main id="community">
+  <div class="cm-wrap" id="communityContent"></div>
 </main>
 
 <!-- ========== CATEGORIES PAGE ========== -->
@@ -1731,7 +1789,8 @@ window.__houseImgs=window.__houseImgs||{};window.__houseImgs['house10']='data:im
     document.querySelector(`nav.main a[data-nav="${id}"]`).classList.add('active');
     pfSyncNav(id);
     window.scrollTo({top:0,behavior:'smooth'});
-    if(id==='home') renderFeed();
+    if(id==='home'){ renderFeed(); try{ window.cmRenderHome(); }catch(e){} }
+    if(id==='community'){ try{ window.cmRenderPage(); }catch(e){} }
     if(id==='profile') renderProfile();
     if(id==='games') renderGameHub();
     if(id==='categories') closeCategoryPage();
@@ -5475,6 +5534,216 @@ try{
 </script>
 
 
+<script>
+/* ===== 423.rent community: posts, neighbors feed, visible profiles ===== */
+(function(){
+  var TOPICS = [['tip','💡 Tip'],['inspire','✨ Inspire'],['story','📖 Story'],['question','❓ Question']];
+  var TLABEL = {}; TOPICS.forEach(function(t){ TLABEL[t[0]] = t[1]; });
+  var state = { topic:null, posts:[], compose:'tip', busy:false, err:'' };
+  var lastUsers = 0;
+
+  function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function userToken(){ try{ return __ls.getItem('423rent_token'); }catch(e){ return null; } }
+  function adminToken(){
+    try{ var raw = __ls.getItem('423rent_admin_session'); if(!raw) return null; var s = JSON.parse(raw); return (s && s.token && s.exp > Date.now()) ? s.token : null; }catch(e){ return null; }
+  }
+  async function call(path, opts, token){
+    opts = opts || {};
+    var h = { 'Content-Type':'application/json' };
+    var t = token === undefined ? (userToken() || adminToken()) : token;
+    if(t) h.Authorization = 'Bearer ' + t;
+    var res = await fetch('/api' + path, Object.assign({}, opts, { headers:h }));
+    var data = {}; try{ data = await res.json(); }catch(e){}
+    if(!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
+    return data;
+  }
+  function toast(m){ try{ pfToast(m); }catch(e){} }
+  function meId(){ try{ return currentUser && currentUser.id; }catch(e){ return null; } }
+  function isAdminView(){ return !!adminToken(); }
+  function ago(ts){
+    var s = Math.max(1, Math.floor((Date.now()-ts)/1000));
+    if(s < 60) return 'just now'; var m = Math.floor(s/60); if(m < 60) return m+'m ago';
+    var h = Math.floor(m/60); if(h < 24) return h+'h ago'; var d = Math.floor(h/24); if(d < 30) return d+'d ago';
+    return new Date(ts).toLocaleDateString();
+  }
+  function avHTML(a){
+    if(a && a.avatar) return '<img src="'+esc(a.avatar)+'" style="width:100%;height:100%;object-fit:cover;" alt="">';
+    return esc(((a && a.name) || '?').split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase());
+  }
+  function openAuthor(id){
+    var target = (id === meId()) ? 'you' : id;
+    openUserProfile(target); goNav('profile');
+  }
+  window.cmOpenAuthor = openAuthor;
+
+  // ---------- make every account visible to everyone ----------
+  async function loadUsers(force){
+    if(!force && Date.now() - lastUsers < 20000) return;
+    lastUsers = Date.now();
+    try{
+      var res = await call('/users', {}, null);
+      var changed = false;
+      (res.users || []).forEach(function(u){
+        if(!u || !u.id) return;
+        if(!mockUsers[u.id]){ mockUsers[u.id] = Object.assign({ __backendUser:true }, u); changed = true; }
+        else if(mockUsers[u.id].__backendUser){
+          var o = mockUsers[u.id];
+          if(o.name !== u.name || o.avatar !== u.avatar || o.bio !== u.bio || o.tagline !== u.tagline){ Object.assign(o, u); changed = true; }
+        }
+      });
+      if(changed){
+        renderPeople();
+        var pe = document.getElementById('profile');
+        if(pe && pe.classList.contains('active') && profileState && profileState.subView === 'directory') renderDirectory();
+      }
+    }catch(e){}
+  }
+
+  // directory should not list you twice
+  var _rd = renderDirectory;
+  renderDirectory = function(){
+    var sid = meId(), saved = sid && mockUsers[sid];
+    if(saved) delete mockUsers[sid];
+    try{ _rd(); } finally { if(saved) mockUsers[sid] = saved; }
+  };
+
+  // ---------- rendering ----------
+  function postHTML(p, compact){
+    var a = p.author || {}, mine = (p.userId === meId());
+    var click = a.admin ? '' : ' onclick="cmOpenAuthor(\''+esc(p.userId)+'\')"';
+    var canDel = mine || isAdminView();
+    var role = (typeof tierName !== 'undefined' && tierName[a.role]) ? tierName[a.role] : '';
+    return '<article class="cm-post" data-pid="'+esc(p.id)+'">'
+      + '<div class="cm-who"'+click+'><div class="cm-av">'+avHTML(a)+'</div><div><div class="cm-nm">'+esc(a.name)+(a.admin?'<span class="cm-badge">Team</span>':(role?'<span class="cm-badge">'+esc(role)+'</span>':''))+'</div><div class="cm-sub">'+esc(TLABEL[p.topic]||'Post')+' · '+ago(p.ts)+'</div></div></div>'
+      + '<div class="cm-text">'+esc(compact ? (p.text.length>220 ? p.text.slice(0,220)+'…' : p.text) : p.text)+'</div>'
+      + '<div class="cm-acts"><button class="'+(p.liked?'on':'')+'" onclick="cmLike(\''+esc(p.id)+'\')">'+(p.liked?'♥':'♡')+' '+(p.likes||0)+'</button>'
+      + (!mine && !a.admin ? '<button onclick="openChat(\''+esc(p.userId)+'\')">💬 Message</button>' : '')
+      + (canDel ? '<button class="del" onclick="cmDelete(\''+esc(p.id)+'\')">Delete</button>' : '')
+      + '</div></article>';
+  }
+
+  function renderPeople(){
+    var el = document.getElementById('homePeople'); if(!el) return;
+    var people = Object.keys(mockUsers).map(function(id){ return Object.assign({id:id}, mockUsers[id]); })
+      .filter(function(u){ return u.id !== meId() && !u.blocked; });
+    if(currentUser) people.unshift({ id:'you', name:currentUser.name, avatar:currentUser.avatar, tagline:currentUser.tagline, role:currentUser.role, bio:currentUser.bio });
+    if(!people.length){ el.innerHTML = '<div class="cm-empty">No profiles yet. Be the first!</div>'; return; }
+    el.innerHTML = people.slice(0, 40).map(function(u){
+      var cnt = 0; try{ cnt = listings.filter(function(l){ return l.ownerId === u.id && isListingActive(l); }).length; }catch(e){}
+      var sub = u.id==='you' ? 'This is you' : (cnt ? cnt+' listing'+(cnt===1?'':'s') : (u.tagline || 'Neighbor'));
+      return '<div class="cm-person" onclick="openUserProfile(\''+esc(u.id)+'\');goNav(\'profile\')"><div class="cm-av">'+avHTML(u)+'</div><div class="cm-nm">'+esc(u.name)+'</div><div class="cm-sub">'+esc(sub)+'</div></div>';
+    }).join('');
+  }
+
+  async function renderHomePosts(){
+    var el = document.getElementById('homePosts'); if(!el) return;
+    try{
+      var res = await call('/posts?limit=4');
+      state.posts = res.posts || [];
+      el.innerHTML = state.posts.length ? state.posts.map(function(p){ return postHTML(p, true); }).join('')
+        : '<div class="cm-empty" style="grid-column:1/-1">No posts yet. Share the first tip on the Community page.</div>';
+    }catch(e){
+      el.innerHTML = '<div class="cm-empty" style="grid-column:1/-1">Community posts will show up here.</div>';
+    }
+  }
+  window.cmRenderHome = function(){ loadUsers(); renderPeople(); renderHomePosts(); };
+
+  function composeHTML(){
+    var token = userToken() || adminToken();
+    if(!token){
+      return '<div class="cm-compose"><div class="cm-text" style="margin-bottom:10px;">Log in to share a tip or something that inspired you.</div><button class="cm-post-btn" onclick="var b=document.getElementById(\'loginBtn\');if(b)b.click();">Log in</button></div>';
+    }
+    return '<div class="cm-compose">'
+      + '<textarea id="cmText" maxlength="1000" placeholder="Share a tip, a story, or something that inspired you…"></textarea>'
+      + '<div class="cm-row"><div class="cm-topics">'+TOPICS.map(function(t){ return '<button class="cm-topic '+(state.compose===t[0]?'on':'')+'" onclick="cmSetCompose(\''+t[0]+'\')">'+t[1]+'</button>'; }).join('')+'</div>'
+      + '<button class="cm-post-btn" id="cmPostBtn" onclick="cmSubmit()">Post</button></div>'
+      + '<div class="cm-err" id="cmErr"></div>'
+      + '<div class="cm-note">Community posts are for tips and inspiration. No listings, prices, contact info, or outside links. You can say "check out my page" and people can tap your name.</div>'
+      + '</div>';
+  }
+
+  async function renderPage(){
+    var el = document.getElementById('communityContent'); if(!el) return;
+    var keepText = (document.getElementById('cmText')||{}).value || '';
+    el.innerHTML = '<div class="cm-head"><h2>Community</h2><p>Swap tips, share what inspires you, and get to know your neighbors in the 423.</p></div>'
+      + composeHTML()
+      + '<div class="cm-filter"><button class="feed-chip '+(!state.topic?'active':'')+'" onclick="cmFilter(null)">All</button>'
+      + TOPICS.map(function(t){ return '<button class="feed-chip '+(state.topic===t[0]?'active':'')+'" onclick="cmFilter(\''+t[0]+'\')">'+t[1]+'</button>'; }).join('')+'</div>'
+      + '<div id="cmList"><div class="cm-empty">Loading…</div></div>';
+    var ta = document.getElementById('cmText'); if(ta && keepText) ta.value = keepText;
+    await loadList();
+  }
+  async function loadList(){
+    var list = document.getElementById('cmList'); if(!list) return;
+    try{
+      var res = await call('/posts?limit=60' + (state.topic ? '&topic='+state.topic : ''));
+      state.posts = res.posts || [];
+      list.innerHTML = state.posts.length ? state.posts.map(function(p){ return postHTML(p, false); }).join('')
+        : '<div class="cm-empty">Nothing here yet. Be the first to post.</div>';
+    }catch(e){ list.innerHTML = '<div class="cm-empty">Couldn\'t load posts right now.</div>'; }
+  }
+  window.cmRenderPage = function(){ loadUsers(); renderPage(); };
+  window.cmFilter = function(t){ state.topic = t; renderPage(); };
+  window.cmSetCompose = function(t){ state.compose = t; var v = (document.getElementById('cmText')||{}).value || ''; renderPage().then(function(){ var ta = document.getElementById('cmText'); if(ta){ ta.value = v; } }); };
+  window.cmSubmit = async function(){
+    if(state.busy) return;
+    var ta = document.getElementById('cmText'), err = document.getElementById('cmErr'), btn = document.getElementById('cmPostBtn');
+    var text = ta ? ta.value.trim() : '';
+    if(text.length < 3){ if(err) err.textContent = 'Write a few words first.'; return; }
+    state.busy = true; if(btn) btn.disabled = true; if(err) err.textContent = '';
+    try{
+      await call('/posts', { method:'POST', body:JSON.stringify({ text:text, topic:state.compose }) });
+      if(ta) ta.value = '';
+      toast('Posted');
+      await loadList();
+    }catch(e){ if(err) err.textContent = e.message; }
+    state.busy = false; if(btn) btn.disabled = false;
+  };
+  window.cmLike = async function(id){
+    if(!(userToken() || adminToken())){ toast('Log in to like posts'); return; }
+    try{
+      var r = await call('/posts/'+encodeURIComponent(id)+'/like', { method:'POST' });
+      state.posts.forEach(function(p){ if(p.id === id){ p.likes = r.likes; p.liked = r.liked; } });
+      document.querySelectorAll('[data-pid="'+id+'"]').forEach(function(node){
+        var p = state.posts.filter(function(x){ return x.id === id; })[0];
+        if(p){ var b = node.querySelector('.cm-acts button'); if(b){ b.className = p.liked ? 'on' : ''; b.textContent = (p.liked?'♥':'♡')+' '+p.likes; } }
+      });
+    }catch(e){ toast(e.message); }
+  };
+  window.cmDelete = async function(id){
+    if(!confirm('Delete this post?')) return;
+    try{
+      await call('/posts?id='+encodeURIComponent(id), { method:'DELETE' }, adminToken() || userToken());
+      toast('Post deleted');
+      document.querySelectorAll('[data-pid="'+id+'"]').forEach(function(n){ n.remove(); });
+    }catch(e){ toast(e.message); }
+  };
+
+  // ---------- posts on each profile ----------
+  var _rup = renderUserProfile;
+  renderUserProfile = function(userId){
+    _rup(userId);
+    var uid = userId === 'you' ? meId() : userId;
+    if(!uid) return;
+    call('/posts?limit=20&user='+encodeURIComponent(uid), {}, null).then(function(res){
+      var col = document.querySelector('#profileContent .pf-grid > div');
+      if(!col || !res.posts || !res.posts.length) return;
+      if(profileState.userId !== userId) return;
+      var sec = document.createElement('section'); sec.className = 'pf-panel';
+      sec.innerHTML = '<div class="pf-inner"><div class="pf-title"><span class="l"><span class="ti">✦</span>Community posts</span><span class="sub">'+res.posts.length+'</span></div>'
+        + res.posts.map(function(p){ return postHTML(p, false); }).join('') + '</div>';
+      col.appendChild(sec);
+    }).catch(function(){});
+  };
+
+  // initial load once the page is up
+  function boot(){ loadUsers(true); try{ window.cmRenderHome(); }catch(e){} }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot, 600); });
+  else setTimeout(boot, 600);
+  // pick up accounts/listings that arrive after the backend bootstrap
+  setTimeout(function(){ loadUsers(true); }, 2500);
+})();
+</script>
 <script data-pplx-inline-edit>
 (function () {
   if (window === window.top) return;
