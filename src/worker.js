@@ -220,6 +220,33 @@ const toReview = r => ({ listingId: r.listing_id, agrId: r.agr_id, rating: r.rat
 const toMessage = r => ({ from: r.from_id, to: r.to_id, text: r.text, ts: Number(r.ts) });
 const num = v => { const n = Number(v); return Number.isFinite(n) && n >= 0 ? n : 0; };
 
+// ---- community posts ----
+const POST_TOPICS = ['tip', 'inspire', 'story', 'question'];
+function promoReason(text) {
+  const t = String(text || '');
+  const stripped = t.replace(/https?:\/\/(www\.)?423\.rent\S*/gi, '').replace(/\b423\.rent\b/gi, '');
+  if (/https?:\/\/|www\.|\b[a-z0-9-]+\.(com|net|org|biz|io|co|us|shop|store|app|me|ly)\b/i.test(stripped)) return 'Links to other sites aren\'t allowed here. You can say "check out my page" instead.';
+  if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(stripped)) return 'Please keep email addresses out of posts.';
+  if (/(\+?1[\s.-]?)?\(?\b\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/.test(stripped)) return 'Please keep phone numbers out of posts.';
+  if (/\bfor (rent|sale|lease)\b|\bavailable (to rent|for rent|now)\b|\bnow renting\b|\bbook (now|today)\b|\bcall (me|us) (to|for)\b|\b(dm|text|message) me (to|for|about) (rent|book|buy|price|pricing)|\b(venmo|cash ?app|zelle|paypal)\b|\bdiscount\b|\bspecial offer\b|\bper (day|week|month|hour)\b|\$\s?\d/i.test(stripped)) return 'Posts here are for tips and inspiration, not listings or sales. Put rentals in a listing, and say "check out my page" to point people to it.';
+  return '';
+}
+const toPost = (r, authors, me) => {
+  const a = authors[r.user_id] || {};
+  const likes = Array.isArray(r.likes) ? r.likes : [];
+  return {
+    id: r.id, userId: r.user_id, topic: r.topic, text: r.text, ts: Number(r.created_at),
+    likes: likes.length, liked: !!(me && likes.includes(me)),
+    author: { id: r.user_id, name: a.name || (r.user_id === '__admin__' ? '423.rent' : 'Neighbor'), avatar: a.avatar || '', role: a.role || (r.user_id === '__admin__' ? 'rentplus' : 'rentee'), admin: r.user_id === '__admin__' }
+  };
+};
+async function postAuthors(rows) {
+  const ids = [...new Set(rows.map(r => r.user_id))].filter(id => id !== '__admin__');
+  const out = {};
+  if (ids.length) (await db.select('users', { id: inn(ids) })).forEach(u => { out[u.id] = { name: u.name, avatar: u.avatar || '', role: u.role }; });
+  return out;
+}
+
 // =====================================================================
 // router
 // =====================================================================
@@ -466,6 +493,60 @@ async function route(req, env) {
   }
 
   // ---- admin ----
+  if (p === '/api/posts' && M === 'GET') {
+    const auth = await getAuth(req);
+    const me = auth && auth.userId;
+    const limit = Math.max(1, Math.min(100, parseInt(u.searchParams.get('limit') || '40', 10)));
+    const filters = {};
+    const by = u.searchParams.get('user');
+    if (by) filters.user_id = eq(by);
+    const topic = u.searchParams.get('topic');
+    if (topic && POST_TOPICS.includes(topic)) filters.topic = eq(topic);
+    filters.promo = eq(false);
+    const rows = await db.select('posts', filters, { order: 'created_at.desc', limit });
+    const authors = await postAuthors(rows);
+    return json(200, { posts: rows.map(r => toPost(r, authors, me)) });
+  }
+  if (p === '/api/posts' && M === 'POST') {
+    const auth = await getAuth(req);
+    if (!auth) return json(401, { error: 'Log in to post.' });
+    const b = await readBody(req);
+    const text = String(b.text || '').trim().slice(0, 1000);
+    if (text.length < 3) return json(400, { error: 'Write a few words first.' });
+    const topic = POST_TOPICS.includes(b.topic) ? b.topic : 'tip';
+    if (!auth.admin) {
+      const why = promoReason(text);
+      if (why) return json(422, { error: why });
+      const recent = await db.select('posts', { user_id: eq(auth.userId), created_at: 'gt.' + (Date.now() - 60000) }, { limit: 6 });
+      if (recent.length >= 5) return json(429, { error: 'Slow down a little. Try again in a minute.' });
+    }
+    const row = await db.insert('posts', { id: 'p' + rand(6), user_id: auth.userId, topic, text, promo: false, likes: [], created_at: Date.now() });
+    const authors = await postAuthors([row]);
+    return json(200, { post: toPost(row, authors, auth.userId) });
+  }
+  const pm = p.match(/^\/api\/posts\/([^/]+)\/like$/);
+  if (pm && M === 'POST') {
+    const auth = await getAuth(req);
+    if (!auth) return json(401, { error: 'Log in to like posts.' });
+    const id = decodeURIComponent(pm[1]);
+    const row = (await db.select('posts', { id: eq(id) }, { limit: 1 }))[0];
+    if (!row) return json(404, { error: 'No such post.' });
+    const likes = Array.isArray(row.likes) ? row.likes.slice() : [];
+    const i = likes.indexOf(auth.userId);
+    if (i >= 0) likes.splice(i, 1); else likes.push(auth.userId);
+    await db.update('posts', { id: eq(id) }, { likes });
+    return json(200, { likes: likes.length, liked: i < 0 });
+  }
+  if (p === '/api/posts' && M === 'DELETE') {
+    const auth = await getAuth(req);
+    if (!auth) return json(401, { error: 'Login required.' });
+    const id = u.searchParams.get('id');
+    const row = (await db.select('posts', { id: eq(String(id || '')) }, { limit: 1 }))[0];
+    if (!row) return json(200, { ok: true });
+    if (row.user_id !== auth.userId && !auth.admin) return json(403, { error: 'Not your post.' });
+    await db.remove('posts', { id: eq(row.id) });
+    return json(200, { ok: true });
+  }
   if (p === '/api/admin-login' && M === 'POST') {
     if (limited('admin:' + ip)) return json(429, { error: 'Too many attempts. Try again in a minute.' });
     const body = await readBody(req);
